@@ -1,0 +1,18 @@
+# Check for virtualization support
+LC_ALL=C lscpu | grep Virtualization
+zgrep CONFIG_KVM /proc/config.gz
+lsmod | grep kvm
+# Install packages
+pacman -Sy libvirt qemu iptables-nft dnsmasq
+curl -LO https://storage.googleapis.com/minikube/releases/latest/minikube-linux-amd64\nsudo install minikube-linux-amd64 /usr/local/bin/minikube
+install minikube-linux-amd64 /usr/local/bin/minikube
+# Configure permissions
+usermod --append --groups libvirt $USER
+# Enable services
+systemctl enable virtqemud.socket
+systemctl restart virtqemud.socket
+systemctl enable virtnetworkd.socket
+systemctl restart virtnetworkd.socket
+systemctl enable iptables.service
+systemctl restart iptables.service
+systemctl restart libvirtd.service
